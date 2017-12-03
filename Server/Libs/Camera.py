@@ -8,8 +8,8 @@ class Camera(object):
         print(client_socket)
         self.socket = client_socket
         self.camera = cv2.VideoCapture(0)
-        self.camera.set(3, 1920)
-        self.camera.set(4, 1080)
+        self.camera.set(3, 720)
+        self.camera.set(4, 480)
 
     def capture(self):
         while 1:
