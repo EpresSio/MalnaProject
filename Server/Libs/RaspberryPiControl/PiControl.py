@@ -5,32 +5,18 @@ class PiControl:
     def __init__(self):
         pass
 
-    R1 = None
-    R2 = None
+    R1 = 26
+    R2 = 20
 
-    L2 = None
-    L1 = None
+    L2 = 19
+    L1 = 16
 
-    PIN_STATE_MAP = {}
-    GPIOLOW = 0
-    GPIOHIGH = 1
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(R1, GPIO.OUT)
+    GPIO.setup(R2, GPIO.OUT)
 
-    def setup_pi_for_movement(self):
-        self.R1 = 26
-        self.R2 = 20
-
-        self.L2 = 19
-        self.L1 = 16
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.R1, GPIO.OUT)
-        GPIO.setup(self.R2, GPIO.OUT)
-
-        GPIO.setup(self.L2, GPIO.OUT)
-        GPIO.setup(self.L1, GPIO.OUT)
-
-        self.PIN_STATE_MAP = {self.R1: 0, self.R2: 0,
-                         self.L2: 0, self.L1: 0}
+    GPIO.setup(L2, GPIO.OUT)
+    GPIO.setup(L1, GPIO.OUT)
 
     def move_forward(self, x):
         GPIO.output(self.R1, GPIO.HIGH)
