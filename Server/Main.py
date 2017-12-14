@@ -12,76 +12,83 @@ server_socket.listen(1)
 username = "Ricsi"
 password = "3.14"
 
-access = False;
+pre_string = ">>MalnaProject ::"
+
+access = False
 
 control = Control.Control()
 
-print "Program start"
+print pre_string, "Start"
 
 
-def camera_capture(camera_socket):
-    camera = Camera.Camera(camera_socket)
+def camera_capture(camera_socket_param):
+    camera = Camera.Camera(camera_socket_param)
     camera.capture()
 
 
-def recv(client_socket):
+def recv(client_socket_param, address):
     while 1:
         try:
-            message = client_socket.recv(1024)
-            searchResult = re.search("CONTROL_(.+)::(.+)", message)
-            if searchResult != None:
+            message = client_socket_param.recv(1024)
+            print message
+            search_result = re.search("CONTROL_(.+)::(.+)", message)
+            if search_result is not None:
                 global control
-                controlString = searchResult.groups()
-                if len(controlString) == 2:
-                    if controlString[0] == "M":
-                        speed = control.castControsSpeedToInt(controlString[1])
-                        if speed == None:
-                            client_socket.send(">" + controlString[0] + "_Speed: "
-                                               + controlString[1] + " is not a valid integer" + "\n")
+                control_string = search_result.groups()
+                if len(control_string) == 2:
+                    if control_string[0] == "M":
+                        speed = control.cast_controls_speed_to_int(control_string[1])
+                        if speed is None:
+                            client_socket_param.send(">" + control_string[0] + "_Speed: "
+                                                     + control_string[1] + " is not a valid integer" + "\n")
                             continue
-                        control.modifieMoveSpeed(speed)
-                        client_socket.send(">Current " + controlString[0]
-                                           + "speed:" + controlString[1] + "\n")
-                    elif controlString[0] == "R":
-                        speed = control.castControsSpeedToInt(controlString[1])
-                        if speed == None:
-                            client_socket.send(">" +controlString[0] + "_Speed: "
-                                               + controlString[1] + " is not a valid integer" + "\n")
+                        control.modify_move_speed(speed)
+                        client_socket_param.send(">Current " + control_string[0]
+                                                 + "speed:" + control_string[1] + "\n")
+                    elif control_string[0] == "R":
+                        speed = control.cast_controls_speed_to_int(control_string[1])
+                        if speed is None:
+                            client_socket_param.send(">" + control_string[0] + "_Speed: "
+                                                     + control_string[1] + " is not a valid integer" + "\n")
                             continue
-                        control.modifieRotateSpeed(controlString[1])
-                        client_socket.send(">Current " + controlString[0]
-                                           + "speed:" + controlString[1] + "\n")
+                        control.modify_rotate_speed(control_string[1])
+                        client_socket_param.send(">Current " + control_string[0]
+                                                 + "speed:" + control_string[1] + "\n")
         except Exception as e:
-            sys.exit(0)
+            control.PiControl.cleanup()
+            client_socket_param.shutdown(0)
+            client_socket_param.close()
+            print pre_string, "Disconnected from - ", address
+            return
 
 
-def checkAccess(client_socket):
-    message = client_socket.recv(1024)
+def check_access(client_socket_param):
+    message = client_socket_param.recv(1024)
     global access
-    searchResult = re.search("LOGIN_(.+)::(.+)", message)
-    if searchResult != None:
-        accessStrings = searchResult.groups()
-        if len(accessStrings) == 2 \
-                and accessStrings[0] == username and accessStrings[1] == password:
-                access = True
+    search_result = re.search("LOGIN_(.+)::(.+)", message)
+    if search_result is not None:
+        access_strings = search_result.groups()
+        if len(access_strings) == 2 \
+                and access_strings[0] == username and access_strings[1] == password:
+            access = True
     if not access:
-        client_socket.send("ACCESS_DENIED\n")
+        client_socket_param.send("ACCESS_DENIED\n")
+
 
 while 1:
     try:
-        print "Waiting for client"
+        print pre_string, "Waiting for client"
         client_socket, address = server_socket.accept()
-        print "Conencted to - ", address, "\n"
+        print pre_string, "Connected to - ", address
         client_socket.send("CONNECTED\n")
         while not access:
-            checkAccess(client_socket)
+            check_access(client_socket)
         client_socket.send("ACCESS_GRANTED\n")
         camera_socket, address = server_socket.accept()
-        print "Camera port opened\n"
+        print pre_string, "Camera port opened\n"
         thread2 = threading.Thread(target=camera_capture, args=[camera_socket])
         thread2.start()
-        thread1 = threading.Thread(target=recv, args=[client_socket])
+        thread1 = threading.Thread(target=recv, args=[client_socket, address])
         thread1.start()
-        sys.exit(0)
     except socket.timeout:
         continue

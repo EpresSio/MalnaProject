@@ -15,7 +15,12 @@ class Camera(object):
         while 1:
             try:
                 ret, frame = self.camera.read()
-                data = cv2.imencode('.jpg', frame)[1].tostring()
+                if frame is None:
+                    return
+                try:
+                    data = cv2.imencode('.jpg', frame)[1].tostring()
+                except Exception as e:
+                    continue
                 data = base64.encodestring(data)
                 data = data.replace("\n", "")
                 data = "%s%s%s" % (">", data, "\n")
@@ -36,5 +41,6 @@ class Camera(object):
             try:
                 self.socket.remove(c)
             except Exception as e:
-                print "Client leave without say good-bye :("
+                self.socket.shutdown(0)
+                self.socket.close()
             return 0

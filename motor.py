@@ -6,31 +6,37 @@ mode = GPIO.getmode()
 
 GPIO.cleanup()
 
-Forward = 26
-Backward = 20
+R_1 = 26
+R_2 = 20
+L_1 = 19
+L_2 = 16
 sleeptime = 1
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(Forward, GPIO.OUT)
-GPIO.setup(Backward, GPIO.OUT)
+GPIO.setup(R_1, GPIO.OUT)
+GPIO.setup(R_2, GPIO.OUT)
+GPIO.setup(L_1, GPIO.OUT)
+GPIO.setup(L_2, GPIO.OUT)
 
 
 def forward(x):
-    GPIO.output(Forward, GPIO.HIGH)
+    GPIO.output(R_1, GPIO.HIGH)
+    GPIO.output(L_1, GPIO.HIGH)
     print("Moving Forward")
     time.sleep(x)
-    GPIO.output(Forward, GPIO.LOW)
+    GPIO.output(R_1, GPIO.LOW)
+    GPIO.output(L_1, GPIO.LOW)
 
 
 def reverse(x):
-    GPIO.output(Backward, GPIO.HIGH)
+    GPIO.output(R_2, GPIO.HIGH)
+    GPIO.output(L_2, GPIO.HIGH)
     print("Moving Backward")
     time.sleep(x)
-    GPIO.output(Backward, GPIO.LOW)
+    GPIO.output(R_2, GPIO.LOW)
+    GPIO.output(L_2, GPIO.LOW)
 
+forward(1)
 
-while (1):
-    forward(5)
-
-    reverse(5)
+reverse(1)
 GPIO.cleanup()
