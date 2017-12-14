@@ -1,4 +1,4 @@
-from Server.RaspberryPiControl.PiControl import PiControl
+import PiControl
 
 
 class Control(object):
