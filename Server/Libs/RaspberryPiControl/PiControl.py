@@ -8,7 +8,7 @@ class PiControl:
     R1 = 26
     R2 = 20
 
-    L2 = 19
+    L2 = 21
     L1 = 16
 
     GPIO.setmode(GPIO.BCM)
