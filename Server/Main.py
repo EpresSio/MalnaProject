@@ -55,11 +55,12 @@ def recv(client_socket_param, address):
                         client_socket_param.send(">Current " + control_string[0]
                                                  + "speed:" + control_string[1] + "\n")
         except Exception as e:
-            control.PiControl.cleanup()
-            client_socket_param.shutdown(0)
-            client_socket_param.close()
-            print pre_string, "Disconnected from - ", address
-            return
+            print "Something wrong"
+        # control.PiControl.cleanup()
+        # client_socket_param.shutdown(0)
+        # client_socket_param.close()
+        # print pre_string, "Disconnected from - ", address
+        # return
 
 
 def check_access(client_socket_param):
