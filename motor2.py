@@ -12,7 +12,7 @@ L_1 = 19
 L_2 = 16
 sleeptime = 1
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(R_1, GPIO.OUT)
 GPIO.setup(R_2, GPIO.OUT)
 GPIO.setup(L_1, GPIO.OUT)
