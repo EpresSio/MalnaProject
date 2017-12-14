@@ -1,4 +1,4 @@
-import PiControl
+from RaspberryPiControl import PiControl
 
 
 class Control(object):
