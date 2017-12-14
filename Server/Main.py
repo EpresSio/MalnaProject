@@ -51,7 +51,7 @@ def recv(client_socket_param, address):
                             client_socket_param.send(">" + control_string[0] + "_Speed: "
                                                      + control_string[1] + " is not a valid integer" + "\n")
                             continue
-                        control.modify_rotate_speed(control_string[1])
+                        control.modify_rotate_speed(speed)
                         client_socket_param.send(">Current " + control_string[0]
                                                  + "speed:" + control_string[1] + "\n")
         except Exception as e:
