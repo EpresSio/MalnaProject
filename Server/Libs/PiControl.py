@@ -1,4 +1,4 @@
-import Server.RaspberryPiControl.RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 class PiControl:
