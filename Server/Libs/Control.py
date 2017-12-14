@@ -5,7 +5,7 @@ class Control(object):
     PiControl = None
 
     def __init__(self):
-        self.PiControl = PiControl()
+        self.PiControl = PiControl.PiControl()
 
     def modify_move_speed(self, speed):
         if speed > 0:
