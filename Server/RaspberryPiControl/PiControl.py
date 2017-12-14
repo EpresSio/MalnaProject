@@ -5,68 +5,56 @@ class PiControl:
     def __init__(self):
         pass
 
-    Forward = None
-    Backward = None
+    R1 = None
+    R2 = None
 
-    Right = None
-    Left = None
+    L2 = None
+    L1 = None
 
     PIN_STATE_MAP = {}
     GPIOLOW = 0
     GPIOHIGH = 1
 
     def setup_pi_for_movement(self):
-        self.Forward = 26
-        self.Backward = 20
+        self.R1 = 26
+        self.R2 = 20
 
-        self.Right = 19
-        self.Left = 16
+        self.L2 = 19
+        self.L1 = 16
 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.Forward, GPIO.OUT)
-        GPIO.setup(self.Backward, GPIO.OUT)
+        GPIO.setup(self.R1, GPIO.OUT)
+        GPIO.setup(self.R2, GPIO.OUT)
 
-        GPIO.setup(self.Right, GPIO.OUT)
-        GPIO.setup(self.Left, GPIO.OUT)
+        GPIO.setup(self.L2, GPIO.OUT)
+        GPIO.setup(self.L1, GPIO.OUT)
 
-        PIN_STATE_MAP = {self.Forward: 0, self.Backward: 0,
-                         self.Right: 0, self.Left: 0}
+        self.PIN_STATE_MAP = {self.R1: 0, self.R2: 0,
+                         self.L2: 0, self.L1: 0}
 
     def move_forward(self, x):
-        if self.PIN_STATE_MAP[self.Backward] != 0:
-            GPIO.output(self.Backward, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Forward] != 1:
-            GPIO.output(self.Forward, GPIO.HIGH)
+        GPIO.output(self.R1, GPIO.HIGH)
+        GPIO.output(self.L1, GPIO.HIGH)
 
     def move_backward(self, x):
-        if self.PIN_STATE_MAP[self.Forward] != 0:
-            GPIO.output(self.Forward, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Backward] != 1:
-            GPIO.output(self.Backward, GPIO.HIGH)
+        GPIO.output(self.R2, GPIO.HIGH)
+        GPIO.output(self.L2, GPIO.HIGH)
 
     def move_stop(self):
-        if self.PIN_STATE_MAP[self.Forward] != 0:
-            GPIO.output(self.Forward, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Backward] != 0:
-            GPIO.output(self.Backward, GPIO.LOW)
+        GPIO.output(self.R1, GPIO.LOW)
+        GPIO.output(self.R2, GPIO.LOW)
+        GPIO.output(self.L1, GPIO.LOW)
+        GPIO.output(self.L2, GPIO.LOW)
 
     def rotate_right(self, x):
-        if self.PIN_STATE_MAP[self.Left] != 0:
-            GPIO.output(self.Left, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Right] != 1:
-            GPIO.output(self.Right, GPIO.HIGH)
+        GPIO.output(self.R1, GPIO.HIGH)
 
     def rotate_left(self, x):
-        if self.PIN_STATE_MAP[self.Right] != 0:
-            GPIO.output(self.Right, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Left] != 1:
-            GPIO.output(self.Left, GPIO.HIGH)
+        GPIO.output(self.L1, GPIO.HIGH)
 
     def rotate_stop(self):
-        if self.PIN_STATE_MAP[self.Right] != 0:
-            GPIO.output(self.Right, GPIO.LOW)
-        if self.PIN_STATE_MAP[self.Left] != 0:
-            GPIO.output(self.Left, GPIO.LOW)
+        GPIO.output(self.R1, GPIO.LOW)
+        GPIO.output(self.L1, GPIO.LOW)
 
     def cleanup(self):
         GPIO.cleanup()
