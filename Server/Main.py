@@ -1,8 +1,8 @@
-import sys
 import socket
 import threading
 import re
-from Libs import Camera, Control
+from Libs import Camera
+from Libs.Ardiuno import ArdiunoControl
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -16,7 +16,7 @@ pre_string = ">>MalnaProject ::"
 
 access = False
 
-control = Control.Control()
+control = ArdiunoControl.ArdiunoControl()
 
 print pre_string, "Start"
 
@@ -31,29 +31,15 @@ def recv(client_socket_param, address):
         try:
             message = client_socket_param.recv(1024)
             print message
-            search_result = re.search("CONTROL_(.+)::(.+)", message)
+            search_result = re.search("CONTROL::(.+)_(.+)", message)
             if search_result is not None:
                 global control
                 control_string = search_result.groups()
                 if len(control_string) == 2:
-                    if control_string[0] == "M":
-                        speed = control.cast_controls_speed_to_int(control_string[1])
-                        if speed is None:
-                            client_socket_param.send(">" + control_string[0] + "_Speed: "
-                                                     + control_string[1] + " is not a valid integer" + "\n")
-                            continue
-                        control.modify_move_speed(speed)
-                        client_socket_param.send(">Current " + control_string[0]
-                                                 + "speed:" + control_string[1] + "\n")
-                    elif control_string[0] == "R":
-                        speed = control.cast_controls_speed_to_int(control_string[1])
-                        if speed is None:
-                            client_socket_param.send(">" + control_string[0] + "_Speed: "
-                                                     + control_string[1] + " is not a valid integer" + "\n")
-                            continue
-                        control.modify_rotate_speed(speed)
-                        client_socket_param.send(">Current " + control_string[0]
-                                                 + "speed:" + control_string[1] + "\n")
+                    control.move(control_string[0], control_string[1])
+
+                    client_socket_param.send(">Current rotate value:" + control_string[0]
+                                             + ", current speed value:" + control_string[1] + "\n")
         except Exception as e:
             print "Something wrong"
         # control.PiControl.cleanup()
