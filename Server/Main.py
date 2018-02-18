@@ -31,7 +31,7 @@ def recv(client_socket_param, address):
         try:
             message = client_socket_param.recv(1024)
             print message
-            search_result = re.search("CONTROL::(.+)_(.+)", message)
+            search_result = re.search("CONTROL::(.+)_(.+)>", message)
             if search_result is not None:
                 global control
                 control_string = search_result.groups()
