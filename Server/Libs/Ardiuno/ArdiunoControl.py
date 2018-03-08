@@ -5,7 +5,7 @@ import threading
 
 class ArdiunoControl:
     def __init__(self):
-        self.serialConnection = serial.Serial('/dev/ttyACM1', 115200, timeout=.1)
+        self.serialConnection = serial.Serial('COM7', 115200, timeout=.5)
         recv = threading.Thread(target=self.recvt, args=[self.serialConnection])
         recv.start()
 
@@ -19,11 +19,12 @@ class ArdiunoControl:
                 direction = direction / abs(move)
             speed = abs(move) * 250  # [0-1] -> [0-250]
             if direction == -1:
-                direction = 0
+                direction = 2
         except ValueError:
             return
         self.serialConnection.write(struct.pack('>BBBB',
                                                 255, int(rotate), int(direction), int(speed)))
+        self.serialConnection.flushOutput()
 
     def cast_controls_speed_to_int(self, speed_string):
         try:

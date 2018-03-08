@@ -1,6 +1,7 @@
 import socket
 import threading
 import re
+import time
 from Libs import Camera
 from Libs.Ardiuno import ArdiunoControl
 
@@ -41,7 +42,8 @@ def recv(client_socket_param, address):
                     client_socket_param.send(">Current rotate value:" + control_string[0]
                                              + ", current speed value:" + control_string[1] + "\n")
         except Exception as e:
-            print "Something wrong"
+            control = ArdiunoControl.ArdiunoControl()
+            time.sleep(1000)
         # control.PiControl.cleanup()
         # client_socket_param.shutdown(0)
         # client_socket_param.close()
