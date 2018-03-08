@@ -30,7 +30,7 @@ def recv(client_socket_param, address):
     while 1:
         try:
             message = client_socket_param.recv(1024)
-            print message
+            # print message
             search_result = re.search("CONTROL::(.+)_(.+)>", message)
             if search_result is not None:
                 global control
