@@ -1,11 +1,18 @@
 import struct
 import serial
 import threading
+import serial.tools.list_ports
 
 
 class ArdiunoControl:
     def __init__(self):
-        self.serialConnection = serial.Serial('COM7', 115200, timeout=.5)
+        list = serial.tools.list_ports.comports()
+        connected = []
+        for element in list:
+            connected.append(element[0])
+        if len(connected) == 0:
+            return
+        self.serialConnection = serial.Serial(connected[0], 115200, timeout=.5)
         recv = threading.Thread(target=self.recvt, args=[self.serialConnection])
         recv.start()
 
